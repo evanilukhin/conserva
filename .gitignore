@@ -11,6 +11,7 @@
 /tmp/
 .idea/
 temp_files/
+*.db
 
 ## Specific to RubyMotion:
 .dat*
