@@ -1,9 +1,14 @@
-class MyApp < Sinatra::Base
+class ConvertServiceApi < Sinatra::Base
   register Sinatra::Reloader
   # Запрос получения состояния задачи
   get '/state/:id_task' do
     content_type :json
-    {message: "Returned state  #{ConvertTask.find(id: params[:id_task]).to_s}"}.to_json
+    convert_task = ConvertTask.find(id: params[:id_task])
+    if convert_task
+      {message: "Returned state  #{ConvertTask.find(id: params[:id_task]).to_hash}"}.to_json
+    else
+      status 404
+    end
   end
 
   # Запрос на конвертацию
