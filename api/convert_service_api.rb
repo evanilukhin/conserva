@@ -1,14 +1,21 @@
-class MyApp < Sinatra::Base
+class ConvertServiceApi < Sinatra::Base
   register Sinatra::Reloader
   # Запрос получения состояния задачи
   get '/state/:id_task' do
     content_type :json
-    {message: "Returned state  #{ConvertTask.find(id: params[:id_task]).to_s}"}.to_json
+    convert_task = ConvertTask.find(id: params[:id_task])
+    if convert_task
+      {message: "Returned state  #{convert_task.to_hash}"}.to_json
+    else
+      status 401
+    end
   end
 
   # Запрос на конвертацию
   post '/convert_file' do
     # валидация запроса
+    input_extension = params.first[:input_extension]
+    output_extension = params.first[:output_extension]
 
     # сохранение файла
     tempfile = params.first[1][:tempfile]
@@ -20,7 +27,9 @@ class MyApp < Sinatra::Base
     # создание задачи
     ConvertTask.create do |ct|
       ct.gotten_file_path = filename
-      ct.state = 'get'
+      ct.input_extension = input_extension
+      ct.output_extension = output_extension
+      ct.state = 'getted'
     end
 
     # ответ

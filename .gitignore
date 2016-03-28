@@ -12,7 +12,7 @@
 .idea/
 temp_files/
 *.db
-
+/Gemfile.lock
 ## Specific to RubyMotion:
 .dat*
 .repl_history
