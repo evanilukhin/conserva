@@ -14,18 +14,23 @@ class ConvertServiceApi < Sinatra::Base
   # Запрос на конвертацию
   post '/convert_file' do
     # валидация запроса
-
+    input_extension = params[:input_extension]
+    output_extension = params[:output_extension]
     # сохранение файла
-    tempfile = params.first[1][:tempfile]
-    filename = params.first[1][:filename]
+
+    tempfile = params[:tempfile]
+    filename = params[:filename]
+
     File.open("temp_files/#{Time.now.strftime("%Y_%m_%d-%T")}_#{filename}", 'wb') do |file|
-      file.write tempfile.read
+      file.write tempfile
     end
 
     # создание задачи
     ConvertTask.create do |ct|
       ct.gotten_file_path = filename
-      ct.state = 'get'
+      ct.input_extension = input_extension
+      ct.output_extension = output_extension
+      ct.state = 'getted'
     end
 
     # ответ
