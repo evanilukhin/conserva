@@ -11,6 +11,7 @@
 /tmp/
 .idea/
 temp_files/
+test_files/
 *.db
 /Gemfile.lock
 ## Specific to RubyMotion:

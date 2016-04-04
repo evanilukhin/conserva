@@ -30,7 +30,7 @@ class ConvertServiceApi < Sinatra::Base
       ct.input_extension = input_extension
       ct.output_extension = output_extension
       ct.created_at = Time.now
-      ct.state = 'getted'
+      ct.state = 'getted' # @todo заменить статус на объект перечислямого типа
     end
 
     # ответ

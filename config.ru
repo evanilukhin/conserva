@@ -1,6 +1,5 @@
 require 'sinatra'
 require 'sinatra/reloader'
-require 'rubygems'
 require 'sequel'
 require 'awesome_print'
 require 'json'
