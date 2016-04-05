@@ -1,6 +1,5 @@
 class  LibreOfficeConvert
   class << self
-
     def valid_combinations
       {
           from: %w(doc txt),
@@ -24,3 +23,5 @@ class  LibreOfficeConvert
     end
   end
 end
+
+ConvertModulesLoader::ConvertModule.register LibreOfficeConvert

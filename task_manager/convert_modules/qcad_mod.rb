@@ -31,3 +31,5 @@ class QcadConvert
     end
   end
 end
+
+ConvertModulesLoader::ConvertModule.register QcadConvert
