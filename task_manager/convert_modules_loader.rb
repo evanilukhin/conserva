@@ -10,10 +10,11 @@ module ConvertModulesLoader
       end
 
       def modules
-         @modules
+        @modules
       end
     end
   end
+
   ConvertModule.init
   Dir["#{Dir.pwd}/convert_modules/*.rb"].each {|file| require_relative file }
 end
