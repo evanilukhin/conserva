@@ -48,7 +48,7 @@ class ConvertServiceApi < Sinatra::Base
         {message: "Файл не сконвертирован"}.to_json
       end
     else
-      status 422
+      status 404
     end
   end
 end
