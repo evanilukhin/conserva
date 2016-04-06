@@ -15,7 +15,7 @@ class ImageConvert
 
         task.state = 'finished'
         task.updated_at = Time.now
-        task.converted_file_path = "../#{task.gotten_file_path.sub(/#{task.input_extension}$/i,
+        task.converted_file_path = "#{task.gotten_file_path.sub(/#{task.input_extension}$/i,
                                                                    task.output_extension)}"
         task.finished_at = Time.now
         task.save

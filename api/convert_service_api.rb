@@ -39,7 +39,16 @@ class ConvertServiceApi < Sinatra::Base
 
   # Запрос на получение готового файла
   get '/get_converted_file/:id_task' do
-    file_path = ConvertTask.find(id: params[:id_task]).gotten_file_path
-    send_file file_path, filename: file_path.split('/').last
+    task = ConvertTask.find(id: params[:id_task])
+    if task
+      if task.state == 'finished'
+        file_path = task.converted_file_path
+        send_file file_path, filename: file_path.split('/').last
+      else
+        {message: "Файл не сконвертирован"}.to_json
+      end
+    else
+      status 422
+    end
   end
 end
