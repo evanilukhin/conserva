@@ -4,6 +4,7 @@ require 'awesome_print'
 DB = Sequel.connect('sqlite://../conserv.db')
 
 require_relative '../entities/convert_task'
+require_relative '../entities/convert_state'
 require_relative 'convert_modules_loader'
 
 # отбор модулей способных в данный момент сконвертировать задачу
@@ -19,7 +20,7 @@ def modules_for_task task, registered_modules
   modules
 end
 
-unconverted_tasks = ConvertTask.exclude(state: ['finished']).all # @todo заменить статус на объект перечислямого типа
+unconverted_tasks = ConvertTask.exclude(state: [ConvertState.finished]).all
 convert_modules = ConvertModulesLoader::ConvertModule.modules
 
 prepared_tasks = {}

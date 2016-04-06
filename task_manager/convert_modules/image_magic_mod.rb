@@ -3,8 +3,8 @@ class ImageConvert
 
     def valid_combinations
       {
-          from: %w(png),
-          to:   %w(jpg)
+          from: %w(png jpg),
+          to:   %w(jpg png)
       }
     end
 
@@ -13,7 +13,7 @@ class ImageConvert
                                                                                    task.output_extension)}"
 
 
-        task.state = 'finished'
+        task.state = ConvertState.finished
         task.updated_at = Time.now
         task.converted_file_path = "#{task.gotten_file_path.sub(/#{task.input_extension}$/i,
                                                                    task.output_extension)}"

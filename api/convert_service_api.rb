@@ -30,7 +30,7 @@ class ConvertServiceApi < Sinatra::Base
       ct.input_extension = input_extension
       ct.output_extension = output_extension
       ct.created_at = Time.now
-      ct.state = 'getted' # @todo заменить статус на объект перечислямого типа
+      ct.state = ConvertState.getted
     end
 
     # ответ
@@ -41,7 +41,7 @@ class ConvertServiceApi < Sinatra::Base
   get '/get_converted_file/:id_task' do
     task = ConvertTask.find(id: params[:id_task])
     if task
-      if task.state == 'finished'
+      if task.state == ConvertState.finished
         file_path = task.converted_file_path
         send_file file_path, filename: file_path.split('/').last
       else

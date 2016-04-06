@@ -11,7 +11,7 @@ class  LibreOfficeConvert
       begin
         system "libreoffice --convert-to #{task.output_extension} --outdir ../temp_files  ../#{task.gotten_file_path} --invisible"
 
-        task.state = 'finished'
+        task.state = ConvertState.finished
         task.updated_at = Time.now
         task.converted_file_path = "#{task.gotten_file_path.sub(/#{task.input_extension}$/i,
                                                                    task.output_extension)}"
