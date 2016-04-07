@@ -7,7 +7,7 @@ class ConvertServiceApi < Sinatra::Base
     if convert_task
       convert_task.to_hash.to_json
     else
-      status 422
+      status 404
     end
   end
 
