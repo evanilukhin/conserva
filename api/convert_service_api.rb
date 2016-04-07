@@ -34,7 +34,7 @@ class ConvertServiceApi < Sinatra::Base
     end
 
     # ответ
-    response.body = {message: "Task  successful created \n"}.to_json
+    state 201
   end
 
   # Запрос на получение готового файла
@@ -45,7 +45,7 @@ class ConvertServiceApi < Sinatra::Base
         file_path = task.converted_file_path
         send_file file_path, filename: file_path.split('/').last
       else
-        {message: "Файл не сконвертирован"}.to_json
+        status 202
       end
     else
       status 404
