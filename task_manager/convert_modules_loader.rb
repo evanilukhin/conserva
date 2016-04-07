@@ -5,8 +5,9 @@ module ConvertModulesLoader
       def init
         @modules = []
       end
-      def register module_class_name
-        @modules |= [module_class_name]
+
+      def register(name)
+        @modules |= [name]
       end
 
       def modules
