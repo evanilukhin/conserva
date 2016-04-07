@@ -26,7 +26,7 @@ class ConvertServiceApi < Sinatra::Base
 
     # создание задачи
     ConvertTask.create do |ct|
-      ct.gotten_file_path = file_path
+      ct.gotten_file_path = file_path # @todo заменить имя на source_file
       ct.input_extension = input_extension
       ct.output_extension = output_extension
       ct.created_at = Time.now

@@ -1,6 +1,6 @@
 module ConvertModulesLoader
   # автоподключение всех файлов модулей
-  class ConvertModule
+  class ConvertModule # @todo заменить на модуль
     class << self
       def init
         @modules = []
