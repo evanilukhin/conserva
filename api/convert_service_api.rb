@@ -34,7 +34,7 @@ class ConvertServiceApi < Sinatra::Base
     end
 
     # ответ
-    state 201
+    status 201
   end
 
   # Запрос на получение готового файла

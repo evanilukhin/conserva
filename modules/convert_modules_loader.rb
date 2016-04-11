@@ -1,3 +1,4 @@
+require_relative 'convert_modules/base_module'
 module ConvertModulesLoader
   # автоподключение всех файлов модулей
   class ConvertModule # @todo заменить на модуль
