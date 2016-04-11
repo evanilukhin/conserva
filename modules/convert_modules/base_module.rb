@@ -1,4 +1,23 @@
+require 'open3'
 module BaseConvertModule
-  @max_workers = 1
-  @timeout = 120
+  def run_command(launch_string)
+    o, s = Open3.capture2e launch_string
+    result_handler o, s
+  end
+
+  # значение таймаута в секундах
+  def timeout_time
+    60
+  end
+
+  # метод обрабатывает результаты запуска модуля и отвечает за  логирование
+  # возвращает true или false в зависимости от успешности конвертации
+  # @todo добавить запись в лог
+  def result_handler output, state
+    if state.exitstatus == 0
+      true
+    else
+      false
+    end
+  end
 end

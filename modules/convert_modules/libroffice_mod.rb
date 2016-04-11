@@ -1,15 +1,29 @@
 module LibreOfficeConvert
-  include BaseConvertModule
-  def self.valid_combinations
-    {
-        from: %w(doc txt odt),
-        to: %w(pdf)
-    }
-  end
+  self.extend BaseConvertModule
 
-  def self.run(options = {})
+  class<<self
+    def valid_combinations
+      {
+          from: %w(doc txt odt),
+          to: %w(pdf)
+      }
+    end
 
-    system "libreoffice --convert-to #{options[:output_extension]} --outdir ../#{options[:output_dir]}  ../#{options[:source_path]} --invisible"
+    def run(options = {})
+      run_command("timeout #{timeout_time} libreoffice --convert-to #{options[:output_extension]} --outdir #{options[:output_dir]}  #{options[:source_path]} --invisible")
+    end
+
+    def timeout_time
+      300
+    end
+
+    def result_handler output, state
+      if state.exitstatus == 0
+        false
+      else
+        true
+      end
+    end
   end
 end
 
