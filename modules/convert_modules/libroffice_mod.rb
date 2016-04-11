@@ -19,11 +19,14 @@ module LibreOfficeConvert
 
     def result_handler output, state
       if state.exitstatus == 0
+        logger.info output
         false
       else
+        logger.error output
         true
       end
     end
+
   end
 end
 

@@ -1,5 +1,7 @@
 require 'sequel'
+require 'logger'
 # DB = Sequel.connect('postgres://xenomorf:ananas@localhost:5432/xenomorf')
+task_mgr_logger = Logger.new('log/task_mgr.log')
 DB = Sequel.connect('sqlite://conserv.db')
 
 require_relative 'entities/convert_task'
@@ -36,7 +38,7 @@ prepared_tasks.each do |task, modules|
     task.errors = "Отсутсвуют необходимые модули конвертации"
     task.save
   else
-    # Process.fork do
+    Process.fork do
       files_dir = 'temp_files/'
       input_filename = File.split(task.gotten_file_path).last
       result_filename = input_filename.gsub(File.extname(input_filename),"") << ".#{task.output_extension}"
@@ -48,17 +50,16 @@ prepared_tasks.each do |task, modules|
       }
 
       if modules.first.run(convert_options)
-        printf "Task with id: #{task.id} successful converted\r\n"
+        task_mgr_logger.info "Task with id: #{task.id} successful converted"
         task.updated_at = Time.now
         # task.state = ConvertState.finished
         task.converted_file_path = result_filename
         task.finished_at = Time.now
         task.save
       else
-        printf "Task with id: #{task.id} was failed\r\n"
+        task_mgr_logger.error "Task with id: #{task.id} was failed"
       end
-
-    # end
+    end
   end
 end
 

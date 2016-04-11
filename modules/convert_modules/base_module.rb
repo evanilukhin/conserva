@@ -15,9 +15,15 @@ module BaseConvertModule
   # @todo добавить запись в лог
   def result_handler output, state
     if state.exitstatus == 0
+      logger.info output
       true
     else
+      logger.error output
       false
     end
+  end
+
+  def logger
+    @@logger ||= Logger.new('log/task_mgr.log')
   end
 end
