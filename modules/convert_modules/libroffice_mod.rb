@@ -17,14 +17,8 @@ module LibreOfficeConvert
       300
     end
 
-    def result_handler output, state
-      if state.exitstatus == 0
-        logger.info output unless output.empty?
-        false
-      else
-        logger.error output
-        true
-      end
+    def max_launched_modules
+      3
     end
 
   end

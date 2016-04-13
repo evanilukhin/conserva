@@ -1,11 +1,6 @@
-class ConvertState
-  # @todo заменить либо на массив констант либо на state mashine либо на символьные переменные
-  class << self
-    def getted
-      'File received'
-    end
-    def finished
-      'File successful converted'
-    end
-  end
+module ConvertState
+  RECEIVED = 'rec'
+  PROCEED = 'proc'
+  ERROR = 'error'
+  FINISHED = 'succ'
 end
