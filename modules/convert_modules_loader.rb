@@ -20,6 +20,5 @@ module ConvertModulesLoader
   end
 
   ConvertModule.init
-  Dir.pwd
   Dir["#{Dir.pwd}/modules/convert_modules/*.rb"].each {|file| require_relative file }
 end

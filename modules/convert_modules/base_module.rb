@@ -10,12 +10,16 @@ module BaseConvertModule
     60
   end
 
+  def max_launched_modules
+    1
+  end
+
   # метод обрабатывает результаты запуска модуля и отвечает за  логирование
   # возвращает true или false в зависимости от успешности конвертации
   # @todo добавить запись в лог
   def result_handler output, state
     if state.exitstatus == 0
-      logger.info output
+      logger.info output unless output.empty?
       true
     else
       logger.error output

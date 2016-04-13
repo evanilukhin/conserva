@@ -23,6 +23,7 @@ end
 
 unconverted_tasks = ConvertTask.exclude(state: [ConvertState.finished]).all
 convert_modules = ConvertModulesLoader::ConvertModule.modules
+launched_modules = Hash[convert_modules.map { |conv_module| [conv_module, 0] }]
 
 prepared_tasks = {}
 unconverted_tasks.each do |task|
@@ -38,26 +39,31 @@ prepared_tasks.each do |task, modules|
     task.errors = "Отсутсвуют необходимые модули конвертации"
     task.save
   else
-    Process.fork do
-      files_dir = 'temp_files/'
-      input_filename = File.split(task.gotten_file_path).last
-      result_filename = input_filename.gsub(File.extname(input_filename),"") << ".#{task.output_extension}"
+    conv_module = modules.first
+    if launched_modules[conv_module] < conv_module.max_launched_modules
+      launched_modules[conv_module]+=1
+      Process.fork do
+        files_dir = 'temp_files/'
+        input_filename = File.split(task.gotten_file_path).last
+        result_filename = input_filename.gsub(File.extname(input_filename), "") << ".#{task.output_extension}"
 
-      convert_options = {output_extension: task.output_extension,
-                         output_dir: files_dir,
-                         source_path: task.gotten_file_path,
-                         destination_path: "#{files_dir}#{result_filename}"
-      }
+        convert_options = {output_extension: task.output_extension,
+                           output_dir: files_dir,
+                           source_path: task.gotten_file_path,
+                           destination_path: "#{files_dir}#{result_filename}"
+        }
 
-      if modules.first.run(convert_options)
-        task_mgr_logger.info "Task with id: #{task.id} successful converted"
-        task.updated_at = Time.now
-        # task.state = ConvertState.finished
-        task.converted_file_path = result_filename
-        task.finished_at = Time.now
-        task.save
-      else
-        task_mgr_logger.error "Task with id: #{task.id} was failed"
+        if conv_module.run(convert_options)
+          task_mgr_logger.info "Task with id: #{task.id} successful converted"
+          task.updated_at = Time.now
+          # task.state = ConvertState.finished
+          task.converted_file_path = result_filename
+          task.finished_at = Time.now
+          task.save
+        else
+          task_mgr_logger.error "Task with id: #{task.id} was failed"
+        end
+
       end
     end
   end
