@@ -21,7 +21,7 @@ def modules_for_task task, registered_modules
   modules
 end
 
-unconverted_tasks = ConvertTask.exclude(state: [ConvertState.finished]).all
+unconverted_tasks = ConvertTask.filter(state: ConvertState::RECEIVED).all
 convert_modules = ConvertModulesLoader::ConvertModule.modules
 launched_modules = Hash[convert_modules.map { |conv_module| [conv_module, 0] }]
 
@@ -35,35 +35,36 @@ end
 # с учётом времени поступления задачи
 prepared_tasks.each do |task, modules|
   if modules.empty?
-    # @todo сюда же добавить логирование уровня где-то Error
-    task.errors = "Отсутсвуют необходимые модули конвертации"
-    task.save
+    task.update(errors: 'Отсутсвуют необходимые модули конвертации')
+    task_mgr_logger.error "Отсутсвуют модули для конвертации из .#{task.input_extension} в
+                          .#{task.output_extension} для задачи с id: #{task.id}"
   else
     conv_module = modules.first
     if launched_modules[conv_module] < conv_module.max_launched_modules
-      launched_modules[conv_module]+=1
+      launched_modules[conv_module] += 1
+      task.update(state:ConvertState::PROCEED)
       Process.fork do
         files_dir = 'temp_files/'
-        input_filename = File.split(task.gotten_file_path).last
+        input_filename = File.split(task.received_file_path).last
         result_filename = input_filename.gsub(File.extname(input_filename), "") << ".#{task.output_extension}"
 
         convert_options = {output_extension: task.output_extension,
                            output_dir: files_dir,
-                           source_path: task.gotten_file_path,
+                           source_path: task.received_file_path,
                            destination_path: "#{files_dir}#{result_filename}"
         }
 
         if conv_module.run(convert_options)
           task_mgr_logger.info "Task with id: #{task.id} successful converted"
           task.updated_at = Time.now
-          # task.state = ConvertState.finished
+          task.state = ConvertState::FINISHED
           task.converted_file_path = result_filename
           task.finished_at = Time.now
           task.save
         else
+          task.update(state: ConvertState::STATE_ERROR)
           task_mgr_logger.error "Task with id: #{task.id} was failed"
         end
-
       end
     end
   end

@@ -26,11 +26,11 @@ class ConvertServiceApi < Sinatra::Base
 
     # создание задачи
     ConvertTask.create do |ct|
-      ct.gotten_file_path = file_path # @todo заменить имя на source_file
+      ct.received_file_path = file_path # @todo заменить имя на source_file
       ct.input_extension = input_extension
       ct.output_extension = output_extension
       ct.created_at = Time.now
-      ct.state = ConvertState.getted
+      ct.state = ConvertState::RECEIVED
     end
 
     # ответ
@@ -41,7 +41,7 @@ class ConvertServiceApi < Sinatra::Base
   get '/get_converted_file/:id_task' do
     task = ConvertTask.find(id: params[:id_task])
     if task
-      if task.state == ConvertState.finished
+      if task.state == ConvertState::FINISHED
         file_path = task.converted_file_path
         send_file file_path, filename: file_path.split('/').last
       else
