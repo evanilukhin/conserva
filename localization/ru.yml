@@ -1,0 +1,17 @@
+ru:
+  validation_errors:
+    file_not_exist: Файла не существует
+
+  convert_task:
+    error:
+      modules_not_exist: Отсутствуют модули для конвертации этой задачи
+
+  task_manager_logger:
+    error:
+      modules_not_exist: "отсутствуют модули для конвертации из .%{input_extension} в
+                                                        .%{output_extension} для задачи с  %{id}"
+      fail_convert: "Ошибка конвертации задачи  %{id}"
+    warning:
+
+    info:
+      success_convert: "Задача %{id} успешно сконвертирована"

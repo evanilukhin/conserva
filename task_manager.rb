@@ -1,6 +1,11 @@
 require 'sequel'
 require 'logger'
-# DB = Sequel.connect('postgres://xenomorf:ananas@localhost:5432/xenomorf')
+require 'i18n'
+
+I18n.enforce_available_locales = true
+I18n.load_path = Dir['localization/*.yml']
+I18n.locale = :en
+
 task_mgr_logger = Logger.new('log/task_mgr.log')
 DB = Sequel.connect('sqlite://conserv.db')
 
@@ -35,9 +40,12 @@ end
 # с учётом времени поступления задачи
 prepared_tasks.each do |task, modules|
   if modules.empty?
-    task.update(errors: 'Отсутсвуют необходимые модули конвертации')
-    task_mgr_logger.error "Отсутсвуют модули для конвертации из .#{task.input_extension} в
-                          .#{task.output_extension} для задачи с id: #{task.id}"
+    task.update(errors: I18n.t(:modules_not_exist, scope: 'convert_task.error'))
+    task_mgr_logger.error I18n.t(:modules_not_exist,
+                                 scope: 'task_manager_logger.error',
+                                 input_extension: task.input_extension,
+                                 output_extension: task.output_extension,
+                                 id: task.id )
   else
     conv_module = modules.first
     if launched_modules[conv_module] < conv_module.max_launched_modules
@@ -55,15 +63,19 @@ prepared_tasks.each do |task, modules|
         }
 
         if conv_module.run(convert_options)
-          task_mgr_logger.info "Task with id: #{task.id} successful converted"
+          task_mgr_logger.info I18n.t(:success_convert,
+                                      scope: 'task_manager_logger.info',
+                                      id: task.id)
           task.updated_at = Time.now
           task.state = ConvertState::FINISHED
           task.converted_file_path = "#{files_dir}#{result_filename}"
           task.finished_at = Time.now
           task.save
         else
-          task.update(state: ConvertState::STATE_ERROR)
-          task_mgr_logger.error "Task with id: #{task.id} was failed"
+          task.update(state: ConvertState::ERROR)
+          task_mgr_logger.error I18n.t(:fail_convert,
+                                       scope: 'task_manager_logger.error',
+                                       id: task.id)
         end
       end
     end

@@ -1,0 +1,17 @@
+en:
+  validation_errors:
+    file_not_exist: 'File not exist'
+
+  convert_task:
+    error:
+      modules_not_exist: Can't find modules for convert this task
+
+  task_manager_logger:
+    error:
+      modules_not_exist: "Can't find modules for convert from .%{input_extension} to
+                                                        .%{output_extension} for task  %{id}"
+      fail_convert: "Task  %{id} was failed at convert"
+    warning:
+
+    info:
+      success_convert: "Task  %{id} successful converted"

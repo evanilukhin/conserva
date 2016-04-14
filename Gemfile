@@ -4,6 +4,7 @@ source 'https://rubygems.org'
 
 gem 'awesome_print'
 gem 'haml'
+gem 'i18n'
 gem 'json'
 gem 'pg'
 gem 'rack'
