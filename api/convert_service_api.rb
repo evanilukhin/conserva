@@ -16,15 +16,13 @@ class ConvertServiceApi < Sinatra::Base
     content_type :json
     # валидация запроса
     if validate_params params
-
       input_extension = params[:input_extension]
       output_extension = params[:output_extension]
+
       # сохранение файла
-      tempfile = params[:file][:tempfile]
+      tempfile_path = params[:file][:tempfile].path
       file_path = "temp_files/#{Time.now.strftime("%Y_%m_%d-%T")}_#{params[:file][:filename]}"
-      File.open(file_path, 'wb') do |file|
-        file.write tempfile.read
-      end
+      FileUtils.mv(tempfile_path, file_path)
 
       # создание задачи
       begin
