@@ -20,9 +20,12 @@ class ConvertServiceApi < Sinatra::Base
       input_extension = params[:input_extension]
       output_extension = params[:output_extension]
       # сохранение файла
-      tempfile_path = params[:file][:tempfile].path
+      tempfile = params[:file][:tempfile]
       file_path = "temp_files/#{Time.now.strftime("%Y_%m_%d-%T")}_#{params[:file][:filename]}"
-      FileUtils.mv(tempfile_path, file_path)
+      File.open(file_path, 'wb') do |file|
+        file.write tempfile.read
+      end
+
       # создание задачи
       begin
         task = ConvertTask.create do |ct|

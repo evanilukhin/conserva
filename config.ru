@@ -2,7 +2,6 @@ require 'sinatra'
 require 'sinatra/reloader'
 require 'json'
 require 'sequel'
-require 'fileutils'
 # DB = Sequel.connect('postgres://xenomorf:ananas@localhost:5432/xenomorf')
 DB = Sequel.connect('sqlite://conserv.db')
 
