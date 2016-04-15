@@ -19,6 +19,8 @@ GEM
     multi_json (1.11.2)
     netrc (0.11.0)
     pg (0.18.4)
+    process_shared (0.2.1)
+      ffi (~> 1.0)
     rack (1.6.4)
     rack-protection (1.5.3)
       rack
@@ -61,6 +63,7 @@ DEPENDENCIES
   i18n
   json
   pg
+  process_shared
   rack
   rake
   rerun

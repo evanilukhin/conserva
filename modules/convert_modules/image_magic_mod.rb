@@ -15,7 +15,7 @@ module ImageConvert
     end
 
     def max_launched_modules
-      1
+     7
     end
   end
 
