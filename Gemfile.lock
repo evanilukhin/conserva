@@ -3,6 +3,7 @@ GEM
   specs:
     awesome_print (1.6.1)
     backports (3.6.8)
+    daemons (1.2.3)
     domain_name (0.5.20160310)
       unf (>= 0.0.5, < 1.0.0)
     ffi (1.9.10)
@@ -18,6 +19,9 @@ GEM
     mime-types (2.99.1)
     multi_json (1.11.2)
     netrc (0.11.0)
+    passenger (5.0.27)
+      rack
+      rake (>= 0.8.1)
     pg (0.18.4)
     process_shared (0.2.1)
       ffi (~> 1.0)
@@ -59,9 +63,11 @@ PLATFORMS
 
 DEPENDENCIES
   awesome_print
+  daemons
   haml
   i18n
   json
+  passenger
   pg
   process_shared
   rack
@@ -72,3 +78,6 @@ DEPENDENCIES
   sinatra
   sinatra-contrib
   sqlite3
+
+BUNDLED WITH
+   1.11.2

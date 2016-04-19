@@ -3,6 +3,8 @@ source 'https://rubygems.org'
 #ruby=ruby-2.2.1@convert_service
 
 gem 'awesome_print'
+gem 'daemons'
+gem 'passenger'
 gem 'haml'
 gem 'i18n'
 gem 'json'

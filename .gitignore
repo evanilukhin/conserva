@@ -14,6 +14,8 @@ temp_files/
 test_files/
 log/
 *.db
+task_manager.pid
+task_manager.output
 /Gemfile.lock
 ## Specific to RubyMotion:
 .dat*

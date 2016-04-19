@@ -1,6 +1,7 @@
 require 'sinatra'
 require 'sinatra/reloader'
 require 'json'
+require 'phusion_passenger'
 require 'sequel'
 require 'fileutils'
 require 'i18n'
