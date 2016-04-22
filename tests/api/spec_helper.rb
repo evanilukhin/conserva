@@ -1,0 +1,15 @@
+require 'figaro'
+Figaro.application =
+    Figaro::Application.new(environment: 'test', path: '../../config/application.yml')
+Figaro.load
+require 'sinatra'
+require 'sinatra/reloader'
+require 'json'
+require 'fileutils'
+require "#{ENV['root']}/config/common_requirement"
+require 'rack/test'
+require 'rspec'
+require "#{ENV['root']}/api/convert_service_api"
+ENV['RACK_ENV'] = 'test'
+
+require 'minitest/autorun'

@@ -1,18 +1,6 @@
-require 'sequel'
-require 'logger'
-require 'i18n'
-require 'process_shared'
-Dir.chdir File.dirname(File.expand_path(__FILE__))
-I18n.enforce_available_locales = true
-I18n.load_path = Dir['localization/*.yml']
-I18n.locale = :en
-
+Dir.chdir ENV['root']
+require_relative 'config/common_requirement'
 task_mgr_logger = Logger.new('log/task_mgr.log')
-DB = Sequel.connect('sqlite://conserv.db')
-
-require_relative 'entities/convert_task'
-require_relative 'entities/convert_state'
-require_relative 'modules/convert_modules_loader'
 
 # отбор модулей способных в данный момент сконвертировать задачу
 # @todo а может в некое подобие хелпера вынести?
