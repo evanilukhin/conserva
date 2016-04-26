@@ -11,8 +11,8 @@ Sequel.migration do
   up do
     create_table(:convert_tasks) do
       primary_key :id
-      String :gotten_file_path
-      String :converted_file_path
+      String :source_file
+      String :converted_file
       String :input_extension
       String :output_extension
       String :state

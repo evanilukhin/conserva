@@ -52,7 +52,7 @@ loop do
         task.update(state: ConvertState::PROCEED)
         process = Process.fork do
           files_dir = ENV['file_storage']
-          input_filename = task.received_file_path
+          input_filename = task.source_file
           result_filename = input_filename.gsub(File.extname(input_filename), "") << ".#{task.output_extension}"
 
           convert_options = {output_extension: task.output_extension,
@@ -67,7 +67,7 @@ loop do
                                         id: task.id)
             task.updated_at = Time.now
             task.state = ConvertState::FINISHED
-            task.converted_file_path = result_filename
+            task.converted_file = result_filename
             task.finished_at = Time.now
             task.save # если не проходит валидацию - падает, обернуть как исключение или сделать проверку перед сохранением
           else

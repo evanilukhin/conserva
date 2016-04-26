@@ -25,7 +25,7 @@ class APITest < Minitest::Test
     post '/convert_file',
                     input_extension: 'jpg',
                     output_extension: 'png',
-                    file: Rack::Test::UploadedFile.new('1.jpg', 'image/jpg')
+                    file: Rack::Test::UploadedFile.new("#{ENV['file_storage']}/1.jpg", 'image/jpg')
     assert_equal 201, last_response.status
   end
 

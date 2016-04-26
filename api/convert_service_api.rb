@@ -33,7 +33,7 @@ class ConvertServiceApi < Sinatra::Base
       # создание задачи
       begin
         task = ConvertTask.create do |ct|
-          ct.received_file_path = file_name # @todo заменить имя на source_file
+          ct.source_file = file_name
           ct.input_extension = input_extension
           ct.output_extension = output_extension
           ct.created_at = Time.now
@@ -56,7 +56,7 @@ class ConvertServiceApi < Sinatra::Base
     task = ConvertTask.find(id: params[:id_task])
     if task
       if task.state == ConvertState::FINISHED
-        file_name = task.converted_file_path
+        file_name = task.converted_file
         send_file "#{ENV['file_storage']}/#{file_name}", filename: file_name
       else
         status 202
