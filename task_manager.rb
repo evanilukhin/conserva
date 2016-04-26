@@ -1,6 +1,5 @@
-Dir.chdir ENV['root']
-require_relative 'config/common_requirement'
-task_mgr_logger = Logger.new('log/task_mgr.log')
+require"#{ENV['root']}/config/common_requirement"
+task_mgr_logger = Logger.new("#{ENV['root']}/log/task_mgr.log")
 
 # отбор модулей способных в данный момент сконвертировать задачу
 # @todo а может в некое подобие хелпера вынести?

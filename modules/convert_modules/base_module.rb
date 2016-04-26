@@ -28,6 +28,6 @@ module BaseConvertModule
   end
 
   def logger
-    @@logger ||= Logger.new('log/task_mgr.log')
+    @@logger ||= Logger.new("#{ENV['root']}/log/task_mgr.log")
   end
 end

@@ -1,4 +1,4 @@
-require_relative 'convert_modules/base_module'
+require "#{ENV['root']}/modules/convert_modules/base_module"
 require 'open3'
 
 module ConvertModulesLoader
@@ -20,5 +20,5 @@ module ConvertModulesLoader
   end
 
   ConvertModule.init
-  Dir["#{Dir.pwd}/modules/convert_modules/*.rb"].each {|file| require_relative file }
+  Dir["#{ENV['root']}/modules/convert_modules/*.rb"].each {|file| require file }
 end

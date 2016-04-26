@@ -9,7 +9,7 @@ unless Figaro.application.environment
       Figaro::Application.new(environment: "development", path: "config/application.yml")
   Figaro.load
 end
-require_relative 'config/common_requirement'
-require_relative 'api/convert_service_api'
+require "#{ENV['root']}/config/common_requirement"
+require "#{ENV['root']}/api/convert_service_api"
 
 run ConvertServiceApi
