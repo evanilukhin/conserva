@@ -47,19 +47,18 @@ loop do
         launched_modules[conv_module].put_int(0, 0)
       end
       value = launched_modules[conv_module].get_int(0)
-      puts "#{conv_module} #{value}"
       if value < conv_module.max_launched_modules
         launched_modules[conv_module].put_int(0, value + 1)
         task.update(state: ConvertState::PROCEED)
         process = Process.fork do
-          files_dir = 'temp_files/'
-          input_filename = File.split(task.received_file_path).last
+          files_dir = ENV['file_storage']
+          input_filename = task.received_file_path
           result_filename = input_filename.gsub(File.extname(input_filename), "") << ".#{task.output_extension}"
 
           convert_options = {output_extension: task.output_extension,
                              output_dir: files_dir,
-                             source_path: task.received_file_path,
-                             destination_path: "#{files_dir}#{result_filename}"
+                             source_path: "#{files_dir}/#{input_filename}",
+                             destination_path: "#{files_dir}/#{result_filename}"
           }
 
           if conv_module.run(convert_options)
@@ -68,8 +67,7 @@ loop do
                                         id: task.id)
             task.updated_at = Time.now
             task.state = ConvertState::FINISHED
-            task.converted_file_path = "#{files_dir}#{result_filename}"
-            puts task.converted_file_path
+            task.converted_file_path = result_filename
             task.finished_at = Time.now
             task.save # если не проходит валидацию - падает, обернуть как исключение или сделать проверку перед сохранением
           else

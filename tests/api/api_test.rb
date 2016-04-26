@@ -17,4 +17,16 @@ class APITest < Minitest::Test
     get '/state/666'
     assert_equal 404, last_response.status
   end
+  def test_get_file
+    get '/get_converted_file/1'
+    assert last_response.ok?
+  end
+  def test_send_file
+    post '/convert_file',
+                    input_extension: 'jpg',
+                    output_extension: 'png',
+                    file: Rack::Test::UploadedFile.new('1.jpg', 'image/jpg')
+    assert_equal 201, last_response.status
+  end
+
 end
