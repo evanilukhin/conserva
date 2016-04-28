@@ -21,9 +21,9 @@ def convert_file(filename, result_extension)
 end
 RestClient.proxy = ''
 3.times do
-  #convert_file('test_files/test_1.odt','pdf')
-  #convert_file('test_files/test_2.doc','pdf')
-  #convert_file('test_files/test_3.txt','pdf')
+  convert_file('test_files/test_1.odt','pdf')
+  convert_file('test_files/test_2.doc','pdf')
+  convert_file('test_files/test_3.txt','pdf')
   convert_file('test_files/test_4.jpg','bmp')
   sleep 1
 end
