@@ -70,18 +70,14 @@ loop do
         }
         launched_tasks[task] = ProcessShared::SharedMemory.new(:int)
         launched_tasks[task].put_int(0, -1)
-        DB.disconnect
-        process = Process.fork do
+        Thread.new do
           res = conv_module.run(convert_options)
           mutex.synchronize do
             launched_tasks[task].put_int(0, res ? 1 : 0)
             value = launched_modules[conv_module].get_int(0)
             launched_modules[conv_module].put_int(0, value - 1)
           end
-          exit 1 unless res
         end
-        Process.detach process
-        DB.connect(ENV['db'])
       end
     end
     mutex.synchronize do
