@@ -28,8 +28,6 @@ end
 mutex = ProcessShared::Mutex.new
 launched_modules = Hash.new
 launched_tasks = Hash.new
-#Object.send(:remove_const, :DB)
-
 loop do
   unconverted_tasks = ConvertTask.filter(state: ConvertState::RECEIVED).all
   convert_modules = ConvertModulesLoader::ConvertModule.modules
@@ -52,7 +50,6 @@ loop do
 # в идеале, "равномерное" раскидывание задач по модулям
 # с учётом времени поступления задачи
 # переменная класса
-  result_filename = ""
     prepared_tasks.to_h.each do |task, modules|
       conv_module = modules.first
       unless launched_modules.has_key? conv_module
@@ -63,11 +60,9 @@ loop do
       if value < conv_module.max_launched_modules
         launched_modules[conv_module].put_int(0, value + 1)
         task.update(state: ConvertState::PROCEED)
-
         files_dir = ENV['file_storage']
         input_filename = task.source_file
         result_filename = input_filename.gsub(File.extname(input_filename), "") << ".#{task.output_extension}"
-
         convert_options = {output_extension: task.output_extension,
                            output_dir: files_dir,
                            source_path: "#{files_dir}/#{input_filename}",
@@ -91,7 +86,6 @@ loop do
     end
     mutex.synchronize do
       a = launched_tasks.select { |_task, state| state.get_int(0) != -1 }
-      a.each { |t,i| puts i.get_int(0)}
       a.each do |task, state|
         if state.get_int(0) == 1
           task.updated_at = Time.now
