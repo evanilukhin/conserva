@@ -1,4 +1,4 @@
-require"#{ENV['root']}/config/common_requirement"
+require "#{ENV['root']}/config/common_requirement"
 task_mgr_logger = Logger.new("#{ENV['root']}/log/task_mgr.log")
 
 # отбор модулей способных в данный момент сконвертировать задачу
@@ -14,9 +14,8 @@ def modules_for_task task, registered_modules
   modules
 end
 
-mutex = ProcessShared::Mutex.new
 launched_modules = Hash.new
-
+launched_tasks = Hash.new
 loop do
   unconverted_tasks = ConvertTask.filter(state: ConvertState::RECEIVED).all
   convert_modules = ConvertModulesLoader::ConvertModule.modules
@@ -38,52 +37,47 @@ loop do
 # пока запускаем первый попавшийся не занятый модуль из доступных для задачи
 # в идеале, "равномерное" раскидывание задач по модулям
 # с учётом времени поступления задачи
+# переменная класса
   prepared_tasks.to_h.each do |task, modules|
     conv_module = modules.first
-    mutex.synchronize do
-      unless launched_modules.has_key? conv_module
-        launched_modules[conv_module] = ProcessShared::SharedMemory.new(:int)
-        launched_modules[conv_module].put_int(0, 0)
-      end
-      value = launched_modules[conv_module].get_int(0)
-      if value < conv_module.max_launched_modules
-        launched_modules[conv_module].put_int(0, value + 1)
-        task.update(state: ConvertState::PROCEED)
-        process = Process.fork do
-          files_dir = ENV['file_storage']
-          input_filename = task.source_file
-          result_filename = input_filename.gsub(File.extname(input_filename), "") << ".#{task.output_extension}"
-
-          convert_options = {output_extension: task.output_extension,
-                             output_dir: files_dir,
-                             source_path: "#{files_dir}/#{input_filename}",
-                             destination_path: "#{files_dir}/#{result_filename}"
-          }
-
-          if conv_module.run(convert_options)
-            task_mgr_logger.info I18n.t(:success_convert,
-                                        scope: 'task_manager_logger.info',
-                                        id: task.id)
-            task.updated_at = Time.now
-            task.state = ConvertState::FINISHED
-            task.converted_file = result_filename
-            task.finished_at = Time.now
-            task.save # если не проходит валидацию - падает, обернуть как исключение или сделать проверку перед сохранением
-          else
-            task.update(state: ConvertState::ERROR)
-            task_mgr_logger.error I18n.t(:fail_convert,
-                                         scope: 'task_manager_logger.error',
-                                         id: task.id)
-          end
-          mutex.synchronize do
-            value = launched_modules[conv_module].get_int(0)
-            launched_modules[conv_module].put_int(0, value - 1)
-          end
-        end
-        Process.detach process
+    unless launched_modules.has_key? conv_module
+      launched_modules[conv_module] = 0
+    end
+    value = launched_modules[conv_module]
+    if value < conv_module.max_launched_modules
+      launched_modules[conv_module]+=1
+      task.update(state: ConvertState::PROCEED)
+      files_dir = ENV['file_storage']
+      input_filename = task.source_file
+      result_filename = input_filename.gsub(File.extname(input_filename), "") << ".#{task.output_extension}"
+      convert_options = {output_extension: task.output_extension,
+                         output_dir: files_dir,
+                         source_path: "#{files_dir}/#{input_filename}",
+                         destination_path: "#{files_dir}/#{result_filename}"
+      }
+      launched_tasks[task] = -1
+      Thread.new do
+        res = conv_module.run(convert_options)
+        launched_tasks[task] = res ? 1 : 0
+        launched_modules[conv_module]-=1
       end
     end
   end
-  sleep 1
+  a = launched_tasks.select { |_task, state| state != -1 }
+  a.each do |task, state|
+    if state == 1
+      task.updated_at = Time.now
+      task.state = ConvertState::FINISHED
+      task.converted_file = task.source_file.gsub(File.extname(task.source_file), "") << ".#{task.output_extension}"
+      task.finished_at = Time.now
+      task.save
+    else
+      task.update(state: ConvertState::ERROR)
+      task_mgr_logger.error I18n.t(:fail_convert,
+                                   scope: 'task_manager_logger.error',
+                                   id: task.id)
+    end
+    launched_tasks.delete(task)
+  end
 end
 
