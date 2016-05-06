@@ -1,5 +1,4 @@
-module LibreOfficeConvert
-  self.extend BaseConvertModule
+class LibreOfficeConverter < BaseConverter
 
   class<<self
     def valid_combinations
@@ -24,4 +23,4 @@ module LibreOfficeConvert
   end
 end
 
-ConvertModulesLoader::ConvertModule.register LibreOfficeConvert
+ConvertModulesLoader::ConvertModule.register LibreOfficeConverter

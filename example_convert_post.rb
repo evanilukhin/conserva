@@ -6,15 +6,15 @@ def convert_file(filename, result_extension)
                   input_extension: input_extension,
                   output_extension: result_extension,
                   file: File.new(filename, 'rb')
-  puts response.code
-  puts response.cookies
-  puts response.headers
-  puts response.to_str
+  puts [response.code,
+        response.cookies,
+        response.headers,
+        response.to_str].join("\n")
   rescue => e
-    puts e.response.code
-    puts e.response.cookies
-    puts e.response.headers
-    puts e.response.to_str
+    puts [e.response.code,
+          e.response.cookies,
+          e.response.headers,
+          e.response.to_str].join("\n")
   end
 
 

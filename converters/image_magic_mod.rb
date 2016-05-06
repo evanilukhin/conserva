@@ -1,7 +1,4 @@
-# @todo создать базовый класс от которого модули будут наследоваться
-module ImageConvert
-  self.extend BaseConvertModule
-
+class ImageConverter < BaseConverter
   class<<self
     def valid_combinations
       {
@@ -18,7 +15,6 @@ module ImageConvert
      1
     end
   end
-
 end
 
-ConvertModulesLoader::ConvertModule.register ImageConvert
+ConvertModulesLoader::ConvertModule.register ImageConverter

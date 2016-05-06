@@ -1,8 +1,7 @@
 require "#{ENV['root']}/config/common_requirement"
 task_mgr_logger = Logger.new("#{ENV['root']}/log/task_mgr.log")
 
-# отбор модулей способных в данный момент сконвертировать задачу
-# @todo а может в некое подобие хелпера вынести?
+# отбор модулей способных сконвертировать задачу
 def modules_for_task task, registered_modules
   modules = []
   registered_modules.each do |reg_mod|
@@ -16,6 +15,7 @@ end
 
 launched_modules = Hash.new
 launched_tasks = Hash.new
+
 loop do
   unconverted_tasks = ConvertTask.filter(state: ConvertState::RECEIVED).all
   convert_modules = ConvertModulesLoader::ConvertModule.modules
@@ -45,7 +45,7 @@ loop do
     end
     value = launched_modules[conv_module]
     if value < conv_module.max_launched_modules
-      launched_modules[conv_module]+=1
+      launched_modules[conv_module] += 1
       task.update(state: ConvertState::PROCEED)
       files_dir = ENV['file_storage']
       input_filename = task.source_file
@@ -57,15 +57,15 @@ loop do
       }
       launched_tasks[task] = -1
       Thread.new do
-        res = conv_module.run(convert_options)
-        launched_tasks[task] = res ? 1 : 0
-        launched_modules[conv_module]-=1
+          launched_tasks[task] = conv_module.run(convert_options)
+          launched_modules[conv_module] -= 1
       end
     end
   end
-  a = launched_tasks.select { |_task, state| state != -1 }
-  a.each do |task, state|
-    if state == 1
+
+  finished_tasks = launched_tasks.select { |_task, state| state != -1 }
+  finished_tasks.each do |task, state|
+    if state
       task.updated_at = Time.now
       task.state = ConvertState::FINISHED
       task.converted_file = task.source_file.gsub(File.extname(task.source_file), "") << ".#{task.output_extension}"

@@ -1,19 +1,15 @@
-require 'rubygems'
 require 'daemons'
-
 require 'figaro'
 unless Figaro.application.environment
   Figaro.application =
       Figaro::Application.new(environment: "development", path: "#{File.dirname(__FILE__)}/config/application.yml")
   Figaro.load
 end
-file = "#{ENV['root']}/task_manager.rb"
+require "#{ENV['root']}/config/common_requirement"
 
 Daemons.run_proc(
-    'task_manager', # name of daemon
+    'task_manager',
     :dir_mode => :script,
-    :dir => ENV['root'], # directory where pid file will be stored
-    #  :backtrace => true,
-    #  :monitor => true,
+    :dir => ENV['root'],
     :log_output => true
-) { exec "ruby #{file}" }
+) { exec "ruby #{ENV['root']}/task_manager.rb" }
