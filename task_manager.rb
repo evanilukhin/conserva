@@ -25,7 +25,9 @@ loop do
     if modules.any?
       prepared_tasks << [task, modules]
     else
-      task.update(errors: I18n.t(:modules_not_exist, scope: 'convert_task.error'))
+      DB.transaction do
+        task.update(errors: I18n.t(:modules_not_exist, scope: 'convert_task.error'))
+      end
       task_mgr_logger.error I18n.t(:modules_not_exist,
                                    scope: 'task_manager_logger.error',
                                    input_extension: task.input_extension,
@@ -46,7 +48,9 @@ loop do
     value = launched_modules[conv_module]
     if value < conv_module.max_launched_modules
       launched_modules[conv_module] += 1
-      task.update(state: ConvertState::PROCEED)
+      DB.transaction do
+        task.update(state: ConvertState::PROCEED)
+      end
       files_dir = ENV['file_storage']
       input_filename = task.source_file
       result_filename = input_filename.gsub(File.extname(input_filename), "") << ".#{task.output_extension}"
@@ -55,10 +59,11 @@ loop do
                          source_path: "#{files_dir}/#{input_filename}",
                          destination_path: "#{files_dir}/#{result_filename}"
       }
+
       launched_tasks[task] = -1
       Thread.new do
-          launched_tasks[task] = conv_module.run(convert_options)
-          launched_modules[conv_module] -= 1
+        launched_tasks[task] = conv_module.run(convert_options)
+        launched_modules[conv_module] -= 1
       end
     end
   end
@@ -66,13 +71,17 @@ loop do
   finished_tasks = launched_tasks.select { |_task, state| state != -1 }
   finished_tasks.each do |task, state|
     if state
-      task.updated_at = Time.now
-      task.state = ConvertState::FINISHED
-      task.converted_file = task.source_file.gsub(File.extname(task.source_file), "") << ".#{task.output_extension}"
-      task.finished_at = Time.now
-      task.save
+      DB.transaction do
+        task.updated_at = Time.now
+        task.state = ConvertState::FINISHED
+        task.converted_file = task.source_file.gsub(File.extname(task.source_file), "") << ".#{task.output_extension}"
+        task.finished_at = Time.now
+        task.save
+      end
     else
-      task.update(state: ConvertState::ERROR)
+      DB.transaction do
+        task.update(state: ConvertState::ERROR)
+      end
       task_mgr_logger.error I18n.t(:fail_convert,
                                    scope: 'task_manager_logger.error',
                                    id: task.id)

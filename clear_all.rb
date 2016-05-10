@@ -6,5 +6,6 @@ unless Figaro.application.environment
   Figaro.load
 end
 Dir["#{ENV['file_storage']}/*"].each {|file| File.delete file }
+Dir["#{ENV['root']}/tests/download/*"].each {|file| File.delete file }
 DB = Sequel.connect(ENV['db'])
 DB[:convert_tasks].delete
