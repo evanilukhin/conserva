@@ -17,7 +17,9 @@ def one_user (input_filename, out_extension)
                                output_extension: out_extension,
                                file: File.new("#{ENV['root']}/test_files/#{input_filename}", 'rb')
   rescue => e
-    puts "Bad request #{e.response}"
+    puts "Bad request #{[e.response.code,
+                         e.response.cookies,
+                         e.response.headers].join("\n")}"
   end
 
   task_id = JSON.parse(response)['id']
@@ -28,14 +30,16 @@ def one_user (input_filename, out_extension)
       state_task = JSON.parse(response)['state']
       break if state_task == ConvertState::FINISHED
     rescue => e
-      puts "Bad request #{e}"
+      puts "Bad request id: #{task_id unless task_id.nil?} #{[e.response.code,
+                                                              e.response.cookies,
+                                                              e.response.headers].join("\n")}"
       break
     end
     sleep 0.1
   end
 
   if result.nil?
-    File.open("#{ENV['root']}/download/file_#{task_id}.doc", 'w') do |f|
+    File.open("#{ENV['root']}/tests/download/#{File.basename(input_filename, ".*")}_#{task_id}.#{out_extension}", 'w') do |f|
       RestClient.get "http://localhost:9292/get_converted_file/#{task_id}" do |str|
         f.write str
       end
@@ -49,18 +53,18 @@ def one_user (input_filename, out_extension)
   (end_time-start_time).to_f
 end
 
-20.times do
+10.times do
   Process.fork do
-    puts one_user('test_1.odt','pdf')
+    puts one_user('test_1.odt', 'pdf')
   end
   Process.fork do
-    puts one_user('test_2.doc','pdf')
+    puts one_user('test_2.doc', 'pdf')
   end
   Process.fork do
-    puts one_user('test_3.txt','pdf')
+    puts one_user('test_3.txt', 'pdf')
   end
   Process.fork do
-    puts one_user('test_4.jpg','pdf')
+    puts one_user('test_4.jpg', 'bmp')
   end
 end
 
