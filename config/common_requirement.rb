@@ -6,6 +6,7 @@ I18n.enforce_available_locales = true
 I18n.load_path = Dir["#{ENV['root']}/localization/*.yml"]
 I18n.locale = :en
 DB ||= Sequel.connect(ENV['db'])
+DB.logger = Logger.new("#{ENV['root']}/log/db.log")
 Sequel::Model.plugin :json_serializer
 require "#{ENV['root']}/entities/convert_task"
 require "#{ENV['root']}/entities/convert_state"

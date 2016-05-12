@@ -8,6 +8,7 @@ class ConvertServiceApi < Sinatra::Base
       case convert_task.state
         when ConvertState::ERROR
           status 500
+          {message: 'Sorry, conversation was failed.'}.to_json
         else
           status 200
       end
@@ -30,25 +31,25 @@ class ConvertServiceApi < Sinatra::Base
       file_name = "#{Time.now.strftime("%Y_%m_%d-%T")}_#{params[:file][:filename]}"
       FileUtils.mv(tempfile_path, "#{ENV['file_storage']}/#{file_name}")
 
-      task = ConvertTask.new
+
       # создание задачи
       DB.transaction do
         begin
-          task.source_file = file_name
-          task.input_extension = input_extension
-          task.output_extension = output_extension
-          task.created_at = Time.now
-          task.state = ConvertState::RECEIVED
-          task.save
+          task = ConvertTask.create do |ct|
+            ct.source_file = file_name
+            ct.input_extension = input_extension
+            ct.output_extension = output_extension
+            ct.created_at = Time.now
+            ct.state = ConvertState::RECEIVED
+          end
         rescue Sequel::ValidationFailed => e
           halt 422, {message: e.message}.to_json
         end
+        # ответ
+        status 201
+        task.refresh
+        {id: task.id}.to_json
       end
-
-      # ответ
-      status 201
-      task.refresh
-      {id: task.id}.to_json
 
     else
       status 406

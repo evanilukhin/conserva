@@ -88,5 +88,6 @@ loop do
     end
     launched_tasks.delete(task)
   end
+  sleep 0.5
 end
 

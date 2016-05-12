@@ -17,7 +17,7 @@ class LibreOfficeConverter < BaseConverter
     end
 
     def max_launched_modules
-      3
+      4
     end
 
   end

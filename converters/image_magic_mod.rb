@@ -12,7 +12,7 @@ class ImageConverter < BaseConverter
     end
 
     def max_launched_modules
-     1
+     10
     end
   end
 end

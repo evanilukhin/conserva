@@ -1,4 +1,4 @@
-class ConvertTask < Sequel::Model
+class ConvertTask < Sequel::Model(:public__convert_tasks)
   plugin :validation_helpers
   def validate
     super
