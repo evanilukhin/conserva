@@ -9,7 +9,26 @@ unless Figaro.application.environment
       Figaro::Application.new(environment: "development", path: "config/application.yml")
   Figaro.load
 end
+
 require "#{ENV['root']}/config/common_requirement"
 require "#{ENV['root']}/api/convert_service_api"
+
+################################################################################
+# Код для  PhusionPassenger в режиме smart spawn
+# для использования других серверов закомментировать фрагмент
+
+# DB.disconnect
+#
+# if defined?(PhusionPassenger)
+#   PhusionPassenger.on_event(:starting_worker_process) do |forked|
+#     if forked
+#       DB = Sequel.connect(ENV['db'])
+#     else
+#       # We're in direct spawning mode. We don't need to do anything.
+#     end
+#   end
+# end
+
+##################################################################################
 
 run ConvertServiceApi
