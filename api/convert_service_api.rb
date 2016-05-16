@@ -73,6 +73,7 @@ class ConvertServiceApi < Sinatra::Base
   end
 
   private
+
   def validate_params params
     if params[:input_extension] &&
         params[:output_extension] &&
@@ -83,5 +84,9 @@ class ConvertServiceApi < Sinatra::Base
     else
       false
     end
+  end
+
+  def valid_request? request
+
   end
 end

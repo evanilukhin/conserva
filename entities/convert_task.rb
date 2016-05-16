@@ -1,5 +1,8 @@
 class ConvertTask < Sequel::Model(:convert_tasks)
   plugin :validation_helpers
+
+  many_to_one :auth_tokens
+
   def validate
     super
     validates_presence [:state, :input_extension, :output_extension]
