@@ -7,7 +7,8 @@ unless Figaro.application.environment
 end
 require "#{ENV['root']}/config/common_requirement"
 
-SERVICE_ADDRESS = '127.0.0.2'
+SERVICE_ADDRESS = 'localhost:9292'
+USER_TOKEN = '86e81d58-5de3-47b5-9f40-6c430933aa6a'
 
 def one_user (input_filename, out_extension)
   start_time = Time.now

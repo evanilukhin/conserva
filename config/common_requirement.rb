@@ -10,4 +10,5 @@ DB.logger = Logger.new("#{ENV['root']}/log/db.log")
 Sequel::Model.plugin :json_serializer
 require "#{ENV['root']}/entities/convert_task"
 require "#{ENV['root']}/entities/convert_state"
+require "#{ENV['root']}/entities/api_key"
 require "#{ENV['root']}/converters/convert_modules_loader"
