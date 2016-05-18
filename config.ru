@@ -1,5 +1,6 @@
 require 'sinatra'
 require 'sinatra/reloader'
+require 'sinatra/namespace'
 require 'json'
 require 'phusion_passenger'
 require 'fileutils'

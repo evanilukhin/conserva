@@ -8,16 +8,17 @@ end
 require "#{ENV['root']}/config/common_requirement"
 
 SERVICE_ADDRESS = 'localhost:9292'
-USER_TOKEN = '86e81d58-5de3-47b5-9f40-6c430933aa6a'
+USER_TOKEN = '26e079d3-c72d-4425-9181-6daa70170225'
 
 def one_user (input_filename, out_extension)
   start_time = Time.now
 
   input_extension = File.extname("#{ENV['root']}/test_files/#{input_filename}")[1..-1]
   begin
-    response = RestClient.post "http://#{SERVICE_ADDRESS}/convert_file",
+    response = RestClient.post "http://#{SERVICE_ADDRESS}/api/v1/task",
                                input_extension: input_extension,
                                output_extension: out_extension,
+                               api_key: USER_TOKEN,
                                file: File.new("#{ENV['root']}/test_files/#{input_filename}", 'rb')
     if JSON.parse(response)['id']
       task_id = JSON.parse(response)['id']
@@ -25,7 +26,7 @@ def one_user (input_filename, out_extension)
       succ_finished = false
       3000.times do
         begin
-          response = RestClient.get "http://#{SERVICE_ADDRESS}/state/#{task_id}"
+          response = RestClient.get "http://#{SERVICE_ADDRESS}/api/v1/task/#{task_id}", {params: {api_key: USER_TOKEN}}
           state_task = JSON.parse(response)['state']
           if state_task == ConvertState::FINISHED
             succ_finished = true
@@ -43,7 +44,7 @@ def one_user (input_filename, out_extension)
 
       if succ_finished
         File.open("#{ENV['root']}/tests/download/#{File.basename(input_filename, ".*")}_#{task_id}.#{out_extension}", 'w') do |f|
-          RestClient.get "http://#{SERVICE_ADDRESS}/get_converted_file/#{task_id}" do |str|
+          RestClient.get "http://#{SERVICE_ADDRESS}/api/v1/#{task_id}/download", {params: {api_key: USER_TOKEN}} do |str|
             f.write str
           end
         end
@@ -62,7 +63,7 @@ def one_user (input_filename, out_extension)
   (end_time-start_time).to_f
 end
 
-25.times do
+9.times do
   Process.fork do
     puts one_user('test_1.odt', 'pdf')
   end

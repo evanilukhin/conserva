@@ -7,22 +7,22 @@ class APITest < Minitest::Test
   end
 
   def test_exist_task_state
-    get '/state/1'
+    get '/api/v1/task/1'
     response = JSON.parse(last_response.body)
     assert_equal 1,response['id']
     assert last_response.ok?
   end
 
   def test_not_exist_task_state
-    get '/state/666'
+    get '/api/v1/task/666'
     assert_equal 404, last_response.status
   end
   def test_get_file
-    get '/get_converted_file/1'
+    get '/api/v1/task/1'
     assert last_response.ok?
   end
   def test_send_file
-    post '/convert_file',
+    post '/api/v1/task',
                     input_extension: 'jpg',
                     output_extension: 'png',
                     file: Rack::Test::UploadedFile.new("#{ENV['file_storage']}/1.jpg", 'image/jpg')

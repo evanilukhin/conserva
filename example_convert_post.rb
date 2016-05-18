@@ -6,7 +6,7 @@ USER_TOKEN = '26e079d3-c72d-4425-9181-6daa70170225'
 def convert_file(filename, result_extension)
   input_extension = File.extname(filename)[1..-1]
   begin
-  response = RestClient.post "http://#{SERVICE_ADDRESS}/convert_file",
+  response = RestClient.post "http://#{SERVICE_ADDRESS}/api/v1/task",
                   input_extension: input_extension,
                   output_extension: result_extension,
                   api_key: USER_TOKEN,

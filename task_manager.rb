@@ -17,13 +17,13 @@ launched_modules = Hash.new
 launched_tasks = Hash.new
 
 loop do
-  unconverted_tasks = ConvertTask.filter(state: ConvertState::RECEIVED).all
+  unconverted_tasks = ConvertTask.filter(state: ConvertState::RECEIVED).order(:created_at).all
   convert_modules = ConvertModulesLoader::ConvertModule.modules
 
-  prepared_tasks = unconverted_tasks.inject([]) do |prepared_tasks, task|
+  prepared_tasks = unconverted_tasks.inject({}) do |prepared_tasks, task|
     modules = modules_for_task(task, convert_modules)
     if modules.any?
-      prepared_tasks << [task, modules]
+      prepared_tasks.merge!({task => modules})
     else
       DB.transaction do
         task.update(errors: I18n.t(:modules_not_exist, scope: 'convert_task.error'))
@@ -33,6 +33,7 @@ loop do
                                    input_extension: task.input_extension,
                                    output_extension: task.output_extension,
                                    id: task.id)
+      prepared_tasks
     end
   end
 
@@ -40,7 +41,7 @@ loop do
 # в идеале, "равномерное" раскидывание задач по модулям
 # с учётом времени поступления задачи
 # переменная класса
-  prepared_tasks.to_h.each do |task, modules|
+  prepared_tasks.each do |task, modules|
     conv_module = modules.first
     unless launched_modules.has_key? conv_module
       launched_modules[conv_module] = 0
