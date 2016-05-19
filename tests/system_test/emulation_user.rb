@@ -7,18 +7,15 @@ unless Figaro.application.environment
 end
 require "#{ENV['root']}/config/common_requirement"
 
-SERVICE_ADDRESS = 'localhost:9292'
-USER_TOKEN = '26e079d3-c72d-4425-9181-6daa70170225'
-
 def one_user (input_filename, out_extension)
   start_time = Time.now
 
   input_extension = File.extname("#{ENV['root']}/test_files/#{input_filename}")[1..-1]
   begin
-    response = RestClient.post "http://#{SERVICE_ADDRESS}/api/v1/task",
+    response = RestClient.post "http://#{ENV['address']}/api/v1/task",
                                input_extension: input_extension,
                                output_extension: out_extension,
-                               api_key: USER_TOKEN,
+                               api_key: ENV['token'],
                                file: File.new("#{ENV['root']}/test_files/#{input_filename}", 'rb')
     if JSON.parse(response)['id']
       task_id = JSON.parse(response)['id']
@@ -26,7 +23,7 @@ def one_user (input_filename, out_extension)
       succ_finished = false
       3000.times do
         begin
-          response = RestClient.get "http://#{SERVICE_ADDRESS}/api/v1/task/#{task_id}", {params: {api_key: USER_TOKEN}}
+          response = RestClient.get "http://#{ENV['address']}/api/v1/task/#{task_id}", {params: {api_key: ENV['token']}}
           state_task = JSON.parse(response)['state']
           if state_task == ConvertState::FINISHED
             succ_finished = true
@@ -44,7 +41,7 @@ def one_user (input_filename, out_extension)
 
       if succ_finished
         File.open("#{ENV['root']}/tests/download/#{File.basename(input_filename, ".*")}_#{task_id}.#{out_extension}", 'w') do |f|
-          RestClient.get "http://#{SERVICE_ADDRESS}/api/v1/#{task_id}/download", {params: {api_key: USER_TOKEN}} do |str|
+          RestClient.get "http://#{ENV['address']}/api/v1/#{task_id}/download", {params: {api_key: ENV['token']}} do |str|
             f.write str
           end
         end

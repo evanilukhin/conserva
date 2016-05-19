@@ -9,12 +9,17 @@ require "#{ENV['root']}/entities/api_key"
 
 
 desc "Generate unique token"
-task :create_token, [:comment] do |t, args|
-  args.with_defaults(comment: "")
-  uuid = SecureRandom.uuid
+task :create_token, [:name, :comment] do |t, args|
+  args.with_defaults(name: "default_name", comment: "")
+  existed_uuid = ApiKey.all.map(&:uuid)
+  loop do
+    @uuid = SecureRandom.uuid
+    break unless existed_uuid.include? @uuid
+  end
   ApiKey.create do |auth_token|
-    auth_token.id = uuid
+    auth_token.uuid = @uuid
+    auth_token.name = args.name
     auth_token.comment = args.comment
   end
-  puts uuid
+  puts @uuid
 end

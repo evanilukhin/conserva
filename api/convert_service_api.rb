@@ -73,7 +73,7 @@ class ConvertServiceApi < Sinatra::Base
 
       helpers do
         def api_key
-          params[:api_key] && ApiKey.find(id: params[:api_key]) ? ApiKey.find(id: params[:api_key]) : halt(401)
+          params[:api_key] && ApiKey.find(uuid: params[:api_key]) ? ApiKey.find(uuid: params[:api_key]) : halt(401)
         end
 
         def unauthorized_task

@@ -5,6 +5,7 @@ Figaro.application =
 Figaro.load
 require 'sinatra'
 require 'sinatra/reloader'
+require 'sinatra/namespace'
 require 'json'
 require 'fileutils'
 require "#{ENV['root']}/config/common_requirement"

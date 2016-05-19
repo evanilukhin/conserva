@@ -2,12 +2,14 @@ Sequel.migration do
   up do
     DB.transaction do
       create_table(:api_keys) do
-        String :id, size: 36, primary_key: true
+        primary_key :id
+        String :uuid, size: 36, unique: true
+        String :name
         String :comment
       end
 
       alter_table(:convert_tasks) do
-        add_foreign_key :api_key_id, :api_keys, type: String, size: 36
+        add_foreign_key :api_key_id, :api_keys
       end
     end
   end
