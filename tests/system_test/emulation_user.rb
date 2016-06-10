@@ -41,7 +41,7 @@ def one_user (input_filename, out_extension)
 
       if succ_finished
         File.open("#{ENV['root']}/tests/download/#{File.basename(input_filename, ".*")}_#{task_id}.#{out_extension}", 'w') do |f|
-          RestClient.get "http://#{ENV['address']}/api/v1/#{task_id}/download", {params: {api_key: ENV['token']}} do |str|
+          RestClient.get "http://#{ENV['address']}/api/v1/task/#{task_id}/download", {params: {api_key: ENV['token']}} do |str|
             f.write str
           end
         end
@@ -60,7 +60,7 @@ def one_user (input_filename, out_extension)
   (end_time-start_time).to_f
 end
 
-9.times do
+50.times do
   Process.fork do
     puts one_user('test_1.odt', 'pdf')
   end

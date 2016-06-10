@@ -1,16 +1,19 @@
 class ConvertServiceApi < Sinatra::Base
-  register Sinatra::Reloader
   register Sinatra::Namespace
   # Запрос получения состояния задачи
 
+
   namespace '/api' do
     namespace '/v1' do
+
+      # @todo добавить валидацию параметра идентификатора
+      # @todo ограничить количество возвращаемых параметров
       get '/task/:id' do
         content_type :json
         case authorized_task.state
           when ConvertState::ERROR
             status 500
-            {message: 'Sorry, conversation was failed.'}.to_json
+            {message: 'Sorry, conversation was failed, please resend file.'}.to_json
           else
             status 200
         end
@@ -71,7 +74,20 @@ class ConvertServiceApi < Sinatra::Base
         end
       end
 
+      # Запрос на получение возможных преобразований файлов
+      get '/convert_combinations' do
+        content_type :json
+        status 200
+        valid_combinations.to_json
+      end
+
       helpers do
+
+        # список возможных преобразований файлов
+        def valid_combinations
+          ConvertModulesLoader::ConvertModule.valid_combinations
+        end
+
         def api_key
           params[:api_key] && ApiKey.find(uuid: params[:api_key]) ? ApiKey.find(uuid: params[:api_key]) : halt(401)
         end
@@ -89,7 +105,9 @@ class ConvertServiceApi < Sinatra::Base
               params[:output_extension] &&
               params[:file] &&
               params[:file][:tempfile] &&
-              params[:file][:filename]
+              params[:file][:filename] &&
+              valid_combinations.include?([params[:input_extension],
+                                           params[:output_extension]])
             {
                 input_extension: params[:input_extension],
                 output_extension: params[:output_extension],

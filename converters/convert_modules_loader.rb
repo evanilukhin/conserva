@@ -16,9 +16,17 @@ module ConvertModulesLoader
       def modules
         @converters
       end
+
+      def valid_combinations
+        @converters.inject([]) do |combinations, converter|
+          combinations |= [converter.valid_combinations[:from],
+                           converter.valid_combinations[:to]].comprehension.to_a
+        end
+      end
     end
   end
 
   ConvertModule.init
   Dir["#{ENV['root']}/converters/*.rb"].each {|file| require file }
+
 end

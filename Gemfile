@@ -1,8 +1,9 @@
 source 'https://rubygems.org'
 
-#ruby=ruby-2.2.1@convert_service
+#ruby=ruby-2.3.1@convert_service
 
 gem 'awesome_print'
+gem 'combinatorics'
 gem 'daemons'
 gem 'passenger'
 gem 'figaro'
@@ -18,6 +19,7 @@ gem 'rerun'
 gem 'rspec'
 gem 'sequel'
 gem 'process_shared'
+gem 'pry'
 gem 'sqlite3'
 gem 'sinatra'
 gem 'sinatra-contrib'
