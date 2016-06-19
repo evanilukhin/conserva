@@ -4,6 +4,7 @@ require 'i18n'
 require 'process_shared'
 require 'combinatorics'
 require 'pry'
+require 'digest'
 I18n.enforce_available_locales = true
 I18n.load_path = Dir["#{ENV['root']}/localization/*.yml"]
 I18n.locale = :en

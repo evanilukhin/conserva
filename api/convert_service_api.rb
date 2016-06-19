@@ -28,8 +28,8 @@ class ConvertServiceApi < Sinatra::Base
           # сохранение файла
           tempfile_path = new_task_params[:tempfile].path
           file_name = "#{(Time.now.to_f*1000).ceil}_#{new_task_params[:filename]}"
-          FileUtils.mv(tempfile_path, "#{ENV['file_storage']}/#{file_name}")
-
+          new_source_file_path = "#{ENV['file_storage']}/#{file_name}"
+          FileUtils.mv(tempfile_path, new_source_file_path)
           # создание задачи
           DB.transaction do
             begin
@@ -39,6 +39,7 @@ class ConvertServiceApi < Sinatra::Base
                 ct.output_extension = new_task_params[:output_extension]
                 ct.created_at = Time.now
                 ct.state = ConvertState::RECEIVED
+                ct.source_file_sha256 = Digest::SHA256.file(new_source_file_path).hexdigest
                 ct.api_key = api_key
               end
             rescue Sequel::ValidationFailed => e

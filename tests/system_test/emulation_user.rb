@@ -29,7 +29,7 @@ def one_user (input_filename, out_extension)
             succ_finished = true
             break
           end
-        rescue => e
+        rescue  RestClient::ExceptionWithResponse, RestClient::RequestFailed => e
           puts "Bad request id: #{task_id unless task_id.nil?} #{[e.response.code,
                                                                   e.response.cookies,
                                                                   e.response.headers].join("\n")}"
@@ -60,7 +60,7 @@ def one_user (input_filename, out_extension)
   (end_time-start_time).to_f
 end
 
-50.times do
+5.times do
   Process.fork do
     puts one_user('test_1.odt', 'pdf')
   end

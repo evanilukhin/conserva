@@ -53,13 +53,12 @@ loop do
       DB.transaction do
         task.update(state: ConvertState::PROCEED)
       end
-      files_dir = ENV['file_storage']
       input_filename = task.source_file
       result_filename = input_filename.gsub(File.extname(input_filename), "") << ".#{task.output_extension}"
       convert_options = {output_extension: task.output_extension,
-                         output_dir: files_dir,
-                         source_path: "#{files_dir}/#{input_filename}",
-                         destination_path: "#{files_dir}/#{result_filename}"
+                         output_dir: ENV['file_storage'],
+                         source_path: "#{ENV['file_storage']}/#{input_filename}",
+                         destination_path: "#{ENV['file_storage']}/#{result_filename}"
       }
 
       launched_tasks[task] = -1
@@ -73,10 +72,12 @@ loop do
   finished_tasks = launched_tasks.select { |_task, state| state != -1 }
   finished_tasks.each do |task, state|
     if state
+      result_filename = task.source_file.gsub(File.extname(task.source_file), "") << ".#{task.output_extension}"
       DB.transaction do
         task.updated_at = Time.now
         task.state = ConvertState::FINISHED
-        task.converted_file = task.source_file.gsub(File.extname(task.source_file), "") << ".#{task.output_extension}"
+        task.converted_file = result_filename
+        task.result_file_sha256 = Digest::SHA256.file("#{ENV['file_storage']}/#{result_filename}").hexdigest
         task.finished_at = Time.now
         task.save
       end
