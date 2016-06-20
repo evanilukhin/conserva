@@ -17,7 +17,7 @@ class ConvertServiceApi < Sinatra::Base
           else
             status 200
         end
-        authorized_task.to_json
+        authorized_task.to_json(except: [:id, :errors, :api_key_id])
       end
 
       # Запрос на конвертацию
