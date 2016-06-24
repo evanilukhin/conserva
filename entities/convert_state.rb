@@ -1,6 +1,6 @@
 module ConvertState
-  RECEIVED = 'rec'
-  PROCEED = 'proc'
+  RECEIVED = 'received'
+  PROCEED = 'procceed'
   ERROR = 'error'
-  FINISHED = 'succ'
+  FINISHED = 'finished'
 end
