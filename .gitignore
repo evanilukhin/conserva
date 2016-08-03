@@ -45,4 +45,5 @@ build/
 #.rvmrc
 
 # Ignore application configuration
-/config/application.yml
+/config/database.yml
+/config/environment.yml

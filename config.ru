@@ -5,15 +5,18 @@ require 'json'
 require 'phusion_passenger'
 require 'fileutils'
 require 'figaro'
-unless Figaro.application.environment
-  Figaro.application =
-      Figaro::Application.new(environment: "development", path: "config/application.yml")
-  Figaro.load
-end
+
+Figaro.application =
+    Figaro::Application.new(path: "config/environment.yml")
+Figaro.load
+
+Figaro.application =
+      Figaro::Application.new(environment: ENV['environment'], path: "config/database.yml")
+Figaro.load
+
 
 require "#{ENV['root']}/config/common_requirement"
 require "#{ENV['root']}/api/convert_service_api"
-
 ################################################################################
 # Код для  PhusionPassenger в режиме smart spawn
 # для использования других серверов закомментировать фрагмент

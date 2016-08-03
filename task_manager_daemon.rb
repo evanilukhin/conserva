@@ -1,10 +1,12 @@
 require 'daemons'
 require 'figaro'
-unless Figaro.application.environment
-  Figaro.application =
-      Figaro::Application.new(environment: "development", path: "#{File.dirname(__FILE__)}/config/application.yml")
-  Figaro.load
-end
+Figaro.application =
+    Figaro::Application.new(path: "config/environment.yml")
+Figaro.load
+Figaro.application =
+    Figaro::Application.new(environment: ENV['environment'], path: "config/database.yml")
+Figaro.load
+
 require "#{ENV['root']}/config/common_requirement"
 
 Daemons.run_proc(

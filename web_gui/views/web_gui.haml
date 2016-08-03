@@ -1,8 +1,0 @@
-%p
-  %a{:href => "http://0.0.0.0:9292/state/#{rand(10)}"}>get_state
-%p
-  %a{:href => 'http://0.0.0.0:9292/get_converted_file'}>get_converted_file
-%h1 Upload
-%form{:action=>"http://0.0.0.0:9292/convert_file",:method=>"post",:enctype=>"multipart/form-data"}
-  %input{:type=>"file",:name=>"file"}
-  %input{:type=>"submit",:value=>"Upload"}
