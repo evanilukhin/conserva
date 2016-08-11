@@ -1,7 +1,7 @@
 require 'figaro'
 puts Dir.pwd
 Figaro.application =
-    Figaro::Application.new(environment: 'test', path: "#{File.dirname(__FILE__)}/../../config/application.yml")
+    Figaro::Application.new(environment: ENV['SINATRA_ENV'], path: "#{File.dirname(__FILE__)}/../../config/application.yml")
 Figaro.load
 require 'sinatra'
 require 'sinatra/reloader'

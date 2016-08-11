@@ -1,3 +1,3 @@
 root: /home/user/projects/convertation_service
 file_storage: /home/user/projects/convertation_service/temp_files
-environment: development
+SINATRA_ENV: development

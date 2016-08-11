@@ -2,7 +2,7 @@ require 'rest-client'
 require 'figaro'
 unless Figaro.application.environment
   Figaro.application =
-      Figaro::Application.new(environment: "development", path: "../../config/application.yml")
+      Figaro::Application.new(environment: ENV['SINATRA_ENV'], path: "../../config/application.yml")
   Figaro.load
 end
 require "#{ENV['root']}/config/common_requirement"

@@ -1,0 +1,3 @@
+root: /home/asc-ppo-15/projects/convertation_service
+file_storage: /home/asc-ppo-15/projects/convertation_service/temp_files
+SINATRA_ENV: development

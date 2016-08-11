@@ -6,7 +6,7 @@ Figaro.application =
 Figaro.load
 
 Figaro.application =
-    Figaro::Application.new(environment: ENV['environment'], path: "config/database.yml")
+    Figaro::Application.new(environment: ENV['SINATRA_ENV'], path: "config/database.yml")
 Figaro.load
 DB = Sequel.connect(ENV['db'])
 require "#{ENV['root']}/entities/api_key"
