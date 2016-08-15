@@ -1,3 +1,8 @@
 root: /home/asc-ppo-15/projects/convertation_service
 file_storage: /home/asc-ppo-15/projects/convertation_service/temp_files
-SINATRA_ENV: development
+production:
+  db: postgres://dev_user:ananas@localhost:5432/conserv_dev
+test:
+  db: postgres://test_user:12341234@localhost:5432/conserv_test
+development:
+  db: postgres://dev_user:ananas@localhost:5432/conserv_dev

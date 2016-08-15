@@ -1,6 +1,0 @@
-test:
-  db: postgres://test_user:1234@localhost:5432/conserv_test
-development:
-  db: postgres://dev_user:1234@localhost:5432/conserv_dev
-production:
-  db: postgres://prod_user:4321@localhost:5432/conserv_prod

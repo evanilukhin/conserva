@@ -1,10 +1,8 @@
 require 'daemons'
 require 'figaro'
+
 Figaro.application =
-    Figaro::Application.new(path: "config/environment.yml")
-Figaro.load
-Figaro.application =
-    Figaro::Application.new(environment: ENV['SINATRA_ENV'], path: "config/database.yml")
+    Figaro::Application.new(environment: ENV['SINATRA_ENV'] || 'development', path: "config/environment.yml")
 Figaro.load
 
 require "#{ENV['root']}/config/common_requirement"

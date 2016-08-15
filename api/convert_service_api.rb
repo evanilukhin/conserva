@@ -82,6 +82,7 @@ class ConvertServiceApi < Sinatra::Base
         valid_combinations.to_json
       end
 
+
       helpers do
 
         # список возможных преобразований файлов
