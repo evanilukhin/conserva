@@ -15,14 +15,13 @@ namespace :db do
   # 2) rake db:migrate[42] - migrate to concrete version
   desc 'Run migrations'
   task :migrate, [:version] do |t, args|
-    require 'sequel'
     Sequel.extension :migration
     if args[:version]
       puts "Migrating to version #{args[:version]}"
-      Sequel::Migrator.run(DB, '/migrations', target: args[:version].to_i)
+      Sequel::Migrator.run(DB, 'migrations', target: args[:version].to_i)
     else
       puts "Migrating to latest"
-      Sequel::Migrator.run(DB, '/migrations')
+      Sequel::Migrator.run(DB, 'migrations')
     end
   end
 end
