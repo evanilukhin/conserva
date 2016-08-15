@@ -9,6 +9,23 @@ Figaro.load
 DB = Sequel.connect(ENV['db'])
 require "#{ENV['root']}/entities/api_key"
 
+namespace :db do
+  # examples
+  # 1) rake db:migrate - migrate to last version
+  # 2) rake db:migrate[42] - migrate to concrete version
+  desc 'Run migrations'
+  task :migrate, [:version] do |t, args|
+    require 'sequel'
+    Sequel.extension :migration
+    if args[:version]
+      puts "Migrating to version #{args[:version]}"
+      Sequel::Migrator.run(DB, '/migrations', target: args[:version].to_i)
+    else
+      puts "Migrating to latest"
+      Sequel::Migrator.run(DB, '/migrations')
+    end
+  end
+end
 
 # example: rake create_token['user_token','Token  for user User']
 desc 'Generate unique token'
