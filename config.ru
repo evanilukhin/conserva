@@ -5,17 +5,11 @@ require 'json'
 require 'phusion_passenger'
 require 'fileutils'
 require 'figaro'
-
-environment = ENV['SINATRA_ENV'] || 'development'
-Figaro.application =
-      Figaro::Application.new(environment: environment, path: "config/environment.yml")
-Figaro.load
-
-
+require_relative 'config/environment'
 require "#{ENV['root']}/config/common_requirement"
 require "#{ENV['root']}/api/convert_service_api"
 
-if environment.eql?('production')
+if ENV['SINATRA_ENV'] && ENV['SINATRA_ENV'].eql?('production')
   DB.disconnect
   PhusionPassenger.on_event(:starting_worker_process) do |forked|
     if forked

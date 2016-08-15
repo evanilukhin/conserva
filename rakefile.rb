@@ -2,9 +2,7 @@ require 'figaro'
 require 'sequel'
 require 'securerandom'
 
-Figaro.application =
-    Figaro::Application.new(environment: ENV['SINATRA_ENV'] || 'development', path: "config/environment.yml")
-Figaro.load
+require_relative 'config/environment'
 
 DB = Sequel.connect(ENV['db'])
 require "#{ENV['root']}/entities/api_key"
