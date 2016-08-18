@@ -1,11 +1,8 @@
 source 'https://rubygems.org'
 
-#ruby=ruby-2.3.1@convert_service
-
 gem 'awesome_print'
 gem 'combinatorics'
 gem 'daemons'
-gem 'passenger'
 gem 'figaro'
 gem 'minitest'
 gem 'haml'
@@ -23,3 +20,9 @@ gem 'pry'
 gem 'sqlite3'
 gem 'sinatra'
 gem 'sinatra-contrib'
+
+# В окружении production работает apache + passenger из пакетов,
+# который кофликтует с установленным через bundler.
+group :development do
+  gem 'passenger'
+end
