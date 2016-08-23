@@ -1,4 +1,0 @@
-root: /home/asc-ppo-15/projects/convertation_service
-file_storage: /home/asc-ppo-15/projects/convertation_service/temp_files
-downloaded_tasks_store_time: '1' # seconds
-tasks_store_days: '2' # days
