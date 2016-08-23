@@ -55,8 +55,12 @@ class ConvertServiceApi < Sinatra::Base
 
       # Запрос на получение готового файла
       get '/task/:id/download' do
-        if authorized_task.state == ConvertState::FINISHED
-          file_name = authorized_task.converted_file
+        task = authorized_task
+        if task.state == ConvertState::FINISHED
+          file_name = task.converted_file
+          task.downloads_count += 1
+          task.last_download_time = Time.now
+          task.save
           send_file "#{ENV['file_storage']}/#{file_name}", filename: file_name
         else
           status 202
