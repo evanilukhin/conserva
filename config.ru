@@ -2,7 +2,16 @@ require 'sinatra'
 require 'sinatra/reloader'
 require 'sinatra/namespace'
 require 'json'
-require 'phusion_passenger'
+
+# В окружении production использовать код, который идет вместе с пакетом mod_passenger. 
+# В development будет подключаться библиотека, которая устанавливается вместе с гемом passenger.
+# 
+if ENV['SINATRA_ENV'] && ENV['SINATRA_ENV'].eql?('production')
+  require '/usr/share/ruby/vendor_ruby/phusion_passenger'
+else
+  require 'phusion_passenger'
+end
+
 require 'fileutils'
 require 'figaro'
 require_relative 'config/environment'
