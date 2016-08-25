@@ -1,3 +1,5 @@
+#!/usr/bin/env ruby
+
 require 'daemons'
 require 'figaro'
 require_relative 'config/environment'
