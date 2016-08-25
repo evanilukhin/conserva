@@ -1,4 +1,9 @@
+# Основной файл демона конвертации, на него можно натравливать systemd.
+
+require 'figaro'
+require_relative 'config/environment'
 require "#{ENV['root']}/config/common_requirement"
+
 task_mgr_logger = Logger.new("#{ENV['root']}/log/task_mgr.log")
 
 # отбор модулей способных сконвертировать задачу
@@ -93,4 +98,3 @@ loop do
   end
   sleep 0.5
 end
-

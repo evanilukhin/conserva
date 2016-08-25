@@ -1,4 +1,7 @@
 #!/usr/bin/env ruby
+#
+# Этот файл нужен для загрузки демона конвертации из консоли. Systemd натравливать нужно на task_manager.rb
+#
 
 require 'daemons'
 require 'figaro'
