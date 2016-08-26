@@ -9,7 +9,7 @@ class LibreOfficeConverter < BaseConverter
     end
 
     def run(options = {})
-      run_command("timeout #{timeout_time} libreoffice --convert-to #{options[:output_extension]} --outdir #{options[:output_dir]}  #{options[:source_path]} --invisible")
+      run_command("timeout #{timeout_time} libreoffice --headless --convert-to #{options[:output_extension]} --outdir #{options[:output_dir]}  #{options[:source_path]} --invisible")
     end
 
     def timeout_time
