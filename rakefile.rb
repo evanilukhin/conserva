@@ -11,7 +11,7 @@ require "#{ENV['root']}/entities/convert_task"
 namespace :task_cleaner do
   desc 'Clear downloaded files. (Run every 1-10 minutes)'
   task :downloaded do
-    clear_time = Time.now-ENV['downloaded_tasks_store_time'].to_i
+    clear_time = Time.now-ENV['downloaded_tasks_store_time_in_seconds'].to_i
     cleanable_tasks =
         ConvertTask.filter{(downloads_count > 0) & (last_download_time < clear_time) }
     count_cleanable = cleanable_tasks.count

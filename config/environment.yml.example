@@ -1,4 +1,4 @@
 root: /home/user/projects/convertation_service
 file_storage: /home/user/projects/convertation_service/temp_files
-downloaded_tasks_store_time: '900' # seconds
-tasks_store_days: '2' # days
+downloaded_tasks_store_time_in_seconds:  '1'
+tasks_store_days:  '2'
