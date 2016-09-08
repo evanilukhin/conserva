@@ -26,6 +26,8 @@ namespace :task_cleaner do
   desc 'Clear outdated files. (Run every 3-10 days)'
   task :outdated do
     clear_time = Time.now-ENV['tasks_store_days'].to_i*24*3600
+    cleanable_tasks =
+        ConvertTask.filter{(downloads_count > 0) & (last_download_time < clear_time) }
     count_cleanable = cleanable_tasks.count
     cleanable_tasks =
         ConvertTask.filter{created_at < clear_time}
