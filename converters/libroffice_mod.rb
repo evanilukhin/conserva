@@ -3,7 +3,7 @@ class LibreOfficeConverter < BaseConverter
   class<<self
     def valid_combinations
       {
-          from: %w(doc txt odt),
+          from: %w(doc txt odt docx rtf ppt pptx xls xlsx),
           to: %w(pdf)
       }
     end

@@ -1,9 +1,10 @@
 class ImageConverter < BaseConverter
   class<<self
+    # jpg в pdf конвертирует плохо, лучше пока не использовать
     def valid_combinations
       {
-          from: %w(png jpg),
-          to: %w(jpg png bmp)
+          from: %w(png jpg bmp gif),
+          to: %w(jpg png bmp pdf)
       }
     end
 

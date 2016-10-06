@@ -27,7 +27,7 @@ class ConvertServiceApi < Sinatra::Base
         if api_key
           # сохранение файла
           tempfile_path = new_task_params[:tempfile].path
-          file_name = "#{(Time.now.to_f*1000).ceil}_#{new_task_params[:filename]}"
+          file_name = "#{(Time.now.to_f*1000).ceil}_#{new_task_params[:filename]}".tr(' ','')
           new_source_file_path = "#{ENV['file_storage']}/#{file_name}"
           FileUtils.mv(tempfile_path, new_source_file_path)
           # создание задачи
